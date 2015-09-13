@@ -25,13 +25,19 @@ function setJiraAttr(jira) {
         jiraGroup = jiraArray[0];
         jiraNumber = jiraArray[1];
         //Save jiraGroup for next use
-        chrome.storage.local.set({'jiraGroup': jiraGroup});
+        localStorage.setItem('jiraGroup', jiraGroup);
+
+        // chrome.storage.local.set({'jiraGroup': jiraGroup});
+        
     } else if (/^[0-9]+$/.test(jira)) {
         //Use last set jiraGroup
-        chrome.storage.local.get('jiraGroup', function(result) {
-            jiraGroup = result.jiraGroup;
-        });
+        jiraGroup = localStorage.getItem('jiraGroup');
         jiraNumber = jira;
+
+        // chrome.storage.local.get('jiraGroup', function(result) {
+        //     jiraGroup = result.jiraGroup;
+        // });
+
     } else {
         // Add something here
     }
