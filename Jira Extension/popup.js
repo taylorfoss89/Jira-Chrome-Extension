@@ -1,27 +1,35 @@
 // Global reference to the status display SPAN
 var statusDisplay = null;
+var jiraGroup = 'DEVGRU';
+var comment;
+var issue;
 
-// POST the data to the server using XMLHttpRequest
+
+
+function runRunner () {
+    comment = document.getElementById('comment').value;
+    issue = jiraGroup + '-' + document.getElementById('jiraIssue').value;
+
+    if (!comment) {
+        openJiraPage();
+    } else {
+        addComment();
+    }
+}
+
 function openJiraPage() {
-    // Cancel the form submit
     event.preventDefault();
 
-    // Prepare the data to be POSTed by URLEncoding each field's contents
-    var title = document.getElementById('title').value;
-    // var url = encodeURIComponent(document.getElementById('url').value);
-
     chrome.tabs.update({
-        url: "https://contegixapp1.livenation.com/jira/browse/DEVGRU-" + title
+        url: "https://contegixapp1.livenation.com/jira/browse/" + issue
     });
 
-    //statusDisplay.innerHTML = 'Loading Jira Story...';
+    statusDisplay.innerHTML = 'Loading Jira Story...';
 }
 
 function addComment() {
     event.preventDefault();
 
-    var issue = "DEVGRU-" + document.getElementById('title').value;
-    var comment = document.getElementById('comment').value;
     var postData = JSON.stringify({ "body": comment });
     var url = "https://contegixapp1.livenation.com/jira/rest/api/latest/issue/" + issue + "/comment";
     var method = "POST";
@@ -51,6 +59,7 @@ window.addEventListener('load', function(evt) {
     // Cache a reference to the status display SPAN
     statusDisplay = document.getElementById('status-display');
     // Handle the bookmark form submit event with our openJiraPage function
+    document.getElementById('runRunner').addEventListener('submit', runRunner);
     document.getElementById('openJiraPage').addEventListener('submit', openJiraPage);
     document.getElementById('addComment').addEventListener('submit', addComment);
 });

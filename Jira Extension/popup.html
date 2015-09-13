@@ -17,6 +17,10 @@
                 width: 200px;
                 height: 100px;
             }
+            input#jiraIssue {
+                margin-left:1em;
+                width: 100px;
+            }
             input#save { 
                 font-weight: bold; width: auto; 
             }
@@ -24,18 +28,12 @@
         <script src="popup.js"></script>
     </head>
     <body>
-        <form id="openJiraPage">
-            <p><label for="title">Jira</label><br />
-            <input type="text" id="title" name="title" size="50" value="" /></p>
-                <!-- <input id="save" type="submit" value="Open Story" /> -->
-                <!--<span id="status-display"></span>-->
-            </p>
-        </form>
-        <form id="addComment">
+        <form id="runRunner">
             <p><label for="comment">Comment</label><br />
                 <input type="text" id="comment" name="comment" size="200"  value="" /></p>
-            <input id="save" type="submit" value="Update Jira" />
-            <input id="save" type="submit" value="Open Story" />
+            <p><label for="jiraIssue">Jira</label>
+                <input type="text" id="jiraIssue" name="jiraIssue" size="50" value="" /></p>
+            <input id="save" type="submit" value="Run" />
             <span id="status-display"></span>
             </p>
         </form>
