@@ -1,17 +1,15 @@
-// Global reference to the status display SPAN
 var statusDisplay = null;
-var jiraGroup = 'DEVGRU';
+var jiraGroup;
 var jiraIssue;
 var jiraNumber;
 var comment;
 var issue;
-var blockHit;
 
 
 function runner () {
     comment = document.getElementById('comment').value;
     jiraIssue = document.getElementById('jiraIssue').value;
-    // issue = jiraGroup + '-' + document.getElementById('jiraIssue').value;
+
     setJiraAttr(jiraIssue);
 
     if (!comment) {
@@ -19,8 +17,6 @@ function runner () {
     } else {
         addComment();
     }
-
-
 }
 
 function setJiraAttr(jira) {
@@ -48,14 +44,14 @@ function openJiraPage() {
         url: "https://contegixapp1.livenation.com/jira/browse/" + jiraGroup + '-' + jiraNumber
     });
 
-    statusDisplay.innerHTML = 'Loading Jira Story...';
+    statusDisplay.innerHTML = 'Loading Jira Story...' + jiraGroup;
 }
 
 function addComment() {
     event.preventDefault();
 
     var postData = JSON.stringify({ "body": comment });
-    var url = "https://contegixapp1.livenation.com/jira/rest/api/latest/issue/" + issue + "/comment";
+    var url = "https://contegixapp1.livenation.com/jira/rest/api/latest/issue/" + jiraGroup + '-' + jiraNumber + "/comment";
     var method = "POST";
     var async = true;
     var request = new XMLHttpRequest();
@@ -67,7 +63,7 @@ function addComment() {
        var status = request.status;
        var data = request.responseText;
 
-        statusDisplay.innerHTML = "Adding comment...";
+        statusDisplay.innerHTML = "Adding comment..." + jiraGroup;
     }
 
     request.send(postData);
