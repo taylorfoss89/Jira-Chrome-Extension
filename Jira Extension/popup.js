@@ -1,19 +1,43 @@
 // Global reference to the status display SPAN
 var statusDisplay = null;
 var jiraGroup = 'DEVGRU';
+var jiraIssue;
+var jiraNumber;
 var comment;
 var issue;
+var blockHit;
 
 
-
-function runRunner () {
+function runner () {
     comment = document.getElementById('comment').value;
-    issue = jiraGroup + '-' + document.getElementById('jiraIssue').value;
+    jiraIssue = document.getElementById('jiraIssue').value;
+    // issue = jiraGroup + '-' + document.getElementById('jiraIssue').value;
+    setJiraAttr(jiraIssue);
 
     if (!comment) {
         openJiraPage();
     } else {
         addComment();
+    }
+
+
+}
+
+function setJiraAttr(jira) {
+    if (/^[A-z]+-[0-9]+$/.test(jira)) {
+        var jiraArray = jira.split("-",2);
+        jiraGroup = jiraArray[0];
+        jiraNumber = jiraArray[1];
+        //Save jiraGroup for next use
+        chrome.storage.local.set({'jiraGroup': jiraGroup});
+    } else if (/^[0-9]+$/.test(jira)) {
+        //Use last set jiraGroup
+        chrome.storage.local.get('jiraGroup', function(result) {
+            jiraGroup = result.jiraGroup;
+        });
+        jiraNumber = jira;
+    } else {
+        // Add something here
     }
 }
 
@@ -21,7 +45,7 @@ function openJiraPage() {
     event.preventDefault();
 
     chrome.tabs.update({
-        url: "https://contegixapp1.livenation.com/jira/browse/" + issue
+        url: "https://contegixapp1.livenation.com/jira/browse/" + jiraGroup + '-' + jiraNumber
     });
 
     statusDisplay.innerHTML = 'Loading Jira Story...';
@@ -43,7 +67,7 @@ function addComment() {
        var status = request.status;
        var data = request.responseText;
 
-        statusDisplay.innerHTML = "Adding comment..."; 
+        statusDisplay.innerHTML = "Adding comment...";
     }
 
     request.send(postData);
@@ -51,15 +75,7 @@ function addComment() {
 }
 
 
-
-
-
-// When the popup HTML has loaded
 window.addEventListener('load', function(evt) {
-    // Cache a reference to the status display SPAN
     statusDisplay = document.getElementById('status-display');
-    // Handle the bookmark form submit event with our openJiraPage function
-    document.getElementById('runRunner').addEventListener('submit', runRunner);
-    document.getElementById('openJiraPage').addEventListener('submit', openJiraPage);
-    document.getElementById('addComment').addEventListener('submit', addComment);
+    document.getElementById('runner').addEventListener('submit', runner);
 });
