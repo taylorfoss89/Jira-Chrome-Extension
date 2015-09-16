@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body { 
+                min-width: 200px;
+                overflow-x: hidden; 
+                font-family: "Lucida Sans Unicode"; 
+                font-size: 12px;
+                font-weight: bold;
+                /*background-color: #EAF5F8;*/
+            }
+            input, textarea { 
+                width: 250px;
+                margin-top: 0px;
+                margin-left: 0px;
+                border: 2px solid #99cfe0;
+                padding: 5px;
+            }
+            #nav {
+                line-height:10px;
+                float:right;
+                padding:5px;
+            }
+            input#save {
+                line-height:10px;
+                float:left;
+                padding:5px;
+                font-weight: bold; width: auto;
+                background: #e6f3f7;
+            }
+/*            input#comment {
+                width: 200px;
+                height: 100px;
+                padding:5px;
+            }*/
+            input#jiraIssue {
+                margin-left:1em;
+                width: 100px;
+                padding:5px;
+            }
+        </style>
+        <script src="popup.js"></script>
+    </head>
+    <body>
+        <form id="runner">
+            <p><label for="jiraIssue">Jira</label>
+                <input type="text" id="jiraIssue" name="jiraIssue" size="50" placeholder="GROUP-XXX"/></p>
+            <!-- <p><label for="comment">Comment</label><br /> -->
+            <textarea id="comment" name="comment" rows="10" placeholder="Add your comment here..." draggable="true" spellcheck="true"/></textarea>    
+            <div id="save">
+                <input id="save" type="submit" value=" Run "/>
+                <span id="status-display"></span>
+            </div>
+            <div id="nav">
+                <select>
+                    <option value="false">Set a timer</option>
+                    <option value="15">15 min</option>
+                    <option value="30">30 min</option>
+                    <option value="1">1 hr</option>
+                    <option value="2">2 hr</option>
+                    <option value="4">4 hr</option>
+                    <option value="8">8 hr</option>
+                </select>
+            </div>
+            </p>
+        </form>
+    </body>
+</html>
