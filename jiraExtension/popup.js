@@ -6,9 +6,10 @@ var comment;
 var issue;
 
 
+
 function runner () {
     comment = document.getElementById('comment').value;
-    jiraIssue = document.getElementById('jiraIssue').value;
+    if (!jiraIssue) { jiraIssue = document.getElementById('jiraIssue').value; };
 
     setJiraAttr(jiraIssue);
 
@@ -26,17 +27,11 @@ function setJiraAttr(jira) {
         jiraNumber = jiraArray[1];
         //Save jiraGroup for next use
         localStorage.setItem('jiraGroup', jiraGroup);
-
-        // chrome.storage.local.set({'jiraGroup': jiraGroup});
         
     } else if (/^[0-9]+$/.test(jira)) {
         //Use last set jiraGroup
         jiraGroup = localStorage.getItem('jiraGroup');
         jiraNumber = jira;
-
-        // chrome.storage.local.get('jiraGroup', function(result) {
-        //     jiraGroup = result.jiraGroup;
-        // });
 
     } else {
         // Add something here
@@ -50,7 +45,19 @@ function openJiraPage() {
         url: "https://contegixapp1.livenation.com/jira/browse/" + jiraGroup + '-' + jiraNumber
     });
 
-    statusDisplay.innerHTML = 'Loading Jira Story...' + jiraGroup;
+    request.onload = function () {
+        var status = request.status;
+        var data = request.responseText;
+
+        alertError();
+
+        if (request.status === 201) {
+            statusDisplay.innerHTML = 'Loading jira ' + jiraGroup + "-" + jiraNumber;
+        } else {
+            alertError();
+            statusDisplay.innerHTML = "Failed to load page";
+        }
+    }
 }
 
 function addComment() {
@@ -66,18 +73,119 @@ function addComment() {
     request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
 
     request.onload = function () {
-       var status = request.status;
-       var data = request.responseText;
+        var status = request.status;
+        var data = request.responseText;
 
-        statusDisplay.innerHTML = "Adding comment..." + jiraGroup;
+        if (request.status === 201) {
+            statusDisplay.innerHTML = "Successfully added comment to " + jiraGroup + "-" + jiraNumber;
+        } else {
+            alertError();
+            statusDisplay.innerHTML = "Failed to add comment";
+        }
+        
     }
 
     request.send(postData);
 
 }
 
+function retrieveUsersJiras() {
+    event.preventDefault();
+
+    var postData = JSON.stringify(
+        {
+            "jql": "assignee = Taylor.Foss AND status != Resolved AND status != Closed AND status != Verified AND status != Done",
+            "startAt": 0,
+            "maxResults": 15,
+            "fields": [
+                "summary",
+                "status",
+                "assignee"
+            ]
+        }
+    );
+
+    var url = "https://contegixapp1.livenation.com/jira/rest/api/latest/search?";
+    var method = "POST";
+    var async = true;
+    var request = new XMLHttpRequest();
+
+    request.open(method, url, async);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+    request.onload = function () {
+        var status = request.status;
+        var data = JSON.parse(request.responseText);
+        var jirasAssignedToUser = [];
+
+        for (var i = data.issues.length - 1; i >= 0; i--) {
+            jirasAssignedToUser.push(data.issues[i].key);
+        };
+
+        var select = document.getElementById("jiraDropDown");
+        for(var i = 0; i < jirasAssignedToUser.length; i++) {
+            var jiraDropValue = jirasAssignedToUser[i];
+            var el = document.createElement("option");
+            el.textContent = jiraDropValue;
+            el.value = jiraDropValue;
+            select.appendChild(el);
+        }
+
+        if (request.status != 200) {
+            alertError();
+            statusDisplay.innerHTML = "Failed to load jiras" + status + data;
+        }
+        
+    }
+
+    request.send(postData);
+
+}
+
+function checkLoginStatus() {
+    //add something here for checking the status of login
+    event.preventDefault();
+
+    // var postData = JSON.stringify({ "body": comment });
+    var url = "https://contegixapp1.livenation.com/jira/rest/auth/1/session";
+    var method = "GET";
+    var async = true;
+    var request = new XMLHttpRequest();
+
+    request.open(method, url, async);
+    request.setRequestHeader("Content-Type", "application/json;charset=UTF-8");
+
+    request.onload = function () {
+        var status = request.status;
+        var data = request.responseText;
+
+        if (request.status != 200) {
+            statusDisplay.innerHTML = "You are not logged in";
+            //Hide the Run button to prevent user from continuing
+            document.getElementById('runButton').style.visibility = "hidden";
+            alertError();
+        }
+    }
+
+    request.send();
+}
+
+function alertError() {
+    var element = document.getElementsByClassName("body")[0];
+    element.className += " errorAlert";
+}
+
 
 window.addEventListener('load', function(evt) {
+    retrieveUsersJiras();
+    checkLoginStatus();
+
+    var dropDown = document.getElementById('jiraDropDown');
+    dropDown.addEventListener('change', function() {
+        jiraIssue = dropDown.value
+        // statusDisplay.innerHTML = dropDown.value;
+    } );
+
     statusDisplay = document.getElementById('status-display');
     document.getElementById('runner').addEventListener('submit', runner);
 });
