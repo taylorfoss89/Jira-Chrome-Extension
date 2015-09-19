@@ -2,6 +2,7 @@ var statusDisplay = null;
 var jiraGroup;
 var jiraIssue;
 var jiraNumber;
+var jiraUser;
 var comment;
 var issue;
 
@@ -86,15 +87,15 @@ function addComment() {
     }
 
     request.send(postData);
-
 }
 
 function retrieveUsersJiras() {
     event.preventDefault();
 
+    //Post data, sets values to filter on -- user and jiras that are not "closed", "resolved", "verified", nor "done"
     var postData = JSON.stringify(
         {
-            "jql": "assignee = Taylor.Foss AND status != Resolved AND status != Closed AND status != Verified AND status != Done",
+            "jql": "assignee = " + jiraUser + " AND status != Resolved AND status != Closed AND status != Verified AND status != Done",
             "startAt": 0,
             "maxResults": 15,
             "fields": [
@@ -139,7 +140,6 @@ function retrieveUsersJiras() {
     }
 
     request.send(postData);
-
 }
 
 function checkLoginStatus() {
@@ -149,7 +149,7 @@ function checkLoginStatus() {
     // var postData = JSON.stringify({ "body": comment });
     var url = "https://contegixapp1.livenation.com/jira/rest/auth/1/session";
     var method = "GET";
-    var async = true;
+    var async = false;
     var request = new XMLHttpRequest();
 
     request.open(method, url, async);
@@ -157,7 +157,10 @@ function checkLoginStatus() {
 
     request.onload = function () {
         var status = request.status;
-        var data = request.responseText;
+        var data = JSON.parse(request.responseText);
+
+        //Set the active user's Jira name
+        jiraUser = data.name;
 
         if (request.status != 200) {
             statusDisplay.innerHTML = "You are not logged in";
@@ -177,13 +180,14 @@ function alertError() {
 
 
 window.addEventListener('load', function(evt) {
-    retrieveUsersJiras();
+    //Check to make sure a user is logged in
     checkLoginStatus();
-
+    //Populate drowdown with the users currect, active Jiras
+    retrieveUsersJiras();
+    //Listener for jira selection in the dropdown
     var dropDown = document.getElementById('jiraDropDown');
     dropDown.addEventListener('change', function() {
         jiraIssue = dropDown.value
-        // statusDisplay.innerHTML = dropDown.value;
     } );
 
     statusDisplay = document.getElementById('status-display');
