@@ -67,7 +67,7 @@ function addComment() {
     var postData = JSON.stringify({ "body": comment });
     var url = "https://contegixapp1.livenation.com/jira/rest/api/latest/issue/" + jiraGroup + '-' + jiraNumber + "/comment";
     var method = "POST";
-    var async = true;
+    var async = false;
     var request = new XMLHttpRequest();
 
     request.open(method, url, async);
@@ -108,7 +108,7 @@ function retrieveUsersJiras() {
 
     var url = "https://contegixapp1.livenation.com/jira/rest/api/latest/search?";
     var method = "POST";
-    var async = true;
+    var async = false;
     var request = new XMLHttpRequest();
 
     request.open(method, url, async);
@@ -143,9 +143,6 @@ function retrieveUsersJiras() {
 }
 
 function checkLoginStatus() {
-    //add something here for checking the status of login
-    event.preventDefault();
-
     // var postData = JSON.stringify({ "body": comment });
     var url = "https://contegixapp1.livenation.com/jira/rest/auth/1/session";
     var method = "GET";
@@ -180,6 +177,7 @@ function alertError() {
 
 
 window.addEventListener('load', function(evt) {
+    statusDisplay = document.getElementById('status-display');
     //Check to make sure a user is logged in
     checkLoginStatus();
     //Populate drowdown with the users currect, active Jiras
@@ -190,6 +188,5 @@ window.addEventListener('load', function(evt) {
         jiraIssue = dropDown.value
     } );
 
-    statusDisplay = document.getElementById('status-display');
     document.getElementById('runner').addEventListener('submit', runner);
 });
