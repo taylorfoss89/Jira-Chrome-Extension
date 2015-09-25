@@ -101,7 +101,8 @@ function retrieveUsersJiras() {
             "fields": [
                 "summary",
                 "status",
-                "assignee"
+                "assignee",
+                "description"
             ]
         }
     );
@@ -120,15 +121,19 @@ function retrieveUsersJiras() {
         var jirasAssignedToUser = [];
 
         for (var i = data.issues.length - 1; i >= 0; i--) {
-            jirasAssignedToUser.push(data.issues[i].key);
+            jirasAssignedToUser.push(data.issues[i]);
         };
 
         var select = document.getElementById("jiraDropDown");
         for(var i = 0; i < jirasAssignedToUser.length; i++) {
             var jiraDropValue = jirasAssignedToUser[i];
-            var el = document.createElement("option");
-            el.textContent = jiraDropValue;
-            el.value = jiraDropValue;
+            var el            = document.createElement("option");
+            var summary       = jiraDropValue.fields.summary;
+
+            el.textContent = jiraDropValue.key + ': ' + summary.substring(0, 30);
+            el.title       = jiraDropValue.fields.description;
+            el.value       = jiraDropValue.key;
+
             select.appendChild(el);
         }
 
