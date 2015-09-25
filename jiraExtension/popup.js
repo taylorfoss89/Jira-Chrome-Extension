@@ -97,7 +97,7 @@ function retrieveUsersJiras() {
         {
             "jql": "assignee = " + jiraUser + " AND status != Resolved AND status != Closed AND status != Verified AND status != Done",
             "startAt": 0,
-            "maxResults": 15,
+            "maxResults": 100,
             "fields": [
                 "summary",
                 "status",
@@ -178,7 +178,7 @@ function sanitizeUsername(username) {
     // Most usernames are in the form of "firstname.lastname", but some names have a space instead of a period
     // "firstname lastname" requires the space to be prepended with two backslashes for Jira to parse it correctly
     // Any white space that 
-    return username.replace(/\s/g, "// ");
+    return username.replace(/\s/g, '\\ ');
 }
 
 
