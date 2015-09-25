@@ -143,7 +143,6 @@ function retrieveUsersJiras() {
 }
 
 function checkLoginStatus() {
-    // var postData = JSON.stringify({ "body": comment });
     var url = "https://contegixapp1.livenation.com/jira/rest/auth/1/session";
     var method = "GET";
     var async = false;
@@ -156,23 +155,30 @@ function checkLoginStatus() {
         var status = request.status;
         var data = JSON.parse(request.responseText);
 
-        //Set the active user's Jira name
-        jiraUser = data.name;
-
-        if (request.status != 200) {
+        if (request.status === 200) {
+            //Set the active user's Jira name and sanitize
+            jiraUser = sanitizeUsername(data.name);
+        } else {
             statusDisplay.innerHTML = "You are not logged in";
             //Hide the Run button to prevent user from continuing
             document.getElementById('runButton').style.visibility = "hidden";
             alertError();
         }
     }
-
+    
     request.send();
 }
 
 function alertError() {
     var element = document.getElementsByClassName("body")[0];
     element.className += " errorAlert";
+}
+
+function sanitizeUsername(username) {
+    // Most usernames are in the form of "firstname.lastname", but some names have a space instead of a period
+    // "firstname lastname" requires the space to be prepended with two backslashes for Jira to parse it correctly
+    // Any white space that 
+    return username.replace(/\s/g, "// ");
 }
 
 
@@ -187,6 +193,13 @@ window.addEventListener('load', function(evt) {
     dropDown.addEventListener('change', function() {
         jiraIssue = dropDown.value
     } );
+
+    var myTextArea = document.getElementById('comment')
+    myTextArea.addEventListener('keydown', function(e) {
+        if(e.keyCode == 13 && e.metaKey) {
+            runner();
+        }
+    });
 
     document.getElementById('runner').addEventListener('submit', runner);
 });
