@@ -14,7 +14,11 @@ function runner () {
 
     setJiraAttr(jiraIssue);
 
-    if (!comment) {
+    if (!jiraGroup || !jiraNumber) {
+        alertError();
+        statusDisplay.innerHTML = 'Please provide a Jira';
+    }
+    else if (!comment) {
         openJiraPage();
     } else {
         addComment();
