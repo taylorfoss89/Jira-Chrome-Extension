@@ -21,7 +21,7 @@ function runner () {
     else if (!comment) {
         openJiraPage(jiraGroup,jiraNumber);
     } else {
-        addComment(comment);
+        addComment(jiraGroup,jiraNumber,comment);
     }
 }
 
@@ -69,7 +69,7 @@ function openJiraPage(jiraGroup,jiraNumber) {
     // }
 }
 
-function addComment(comment) {
+function addComment(jiraGroup,jiraNumber,comment) {
     event.preventDefault();
 
     var postData = JSON.stringify({ "body": comment });
