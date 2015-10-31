@@ -1,11 +1,11 @@
 - improve UI
-- dropdown of current assigned issues
-- status result of adding comment
-- change UI to show that you are not logged in
 - add a reminder setting
-- cmd+enter to submit
 - hotkey
-- Dropdown for
-    -   jiras assigned to me
-    -   jiras im watching
-    -   jiras ive recently accessed
+- handle sanitizing names with spaces
+- if nothing is entered and the form is submitted, take the user to their kanban board? 
+
+
+patch notes _ 
+
+    checked that markdown is supported -- it is
+    added cmd+enter to submit while in textarea

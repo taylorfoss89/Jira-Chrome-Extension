@@ -7,10 +7,12 @@ var comment;
 var issue;
 
 
-
+// this is the engine of the program
 function runner () {
     comment = document.getElementById('comment').value;
-    if (!jiraIssue) { jiraIssue = document.getElementById('jiraIssue').value; };
+    if (document.getElementById('jiraIssue').value) {
+        jiraIssue = document.getElementById('jiraIssue').value;
+    };
 
     setJiraAttr(jiraIssue);
 
@@ -32,7 +34,7 @@ function setJiraAttr(jira) {
         jiraNumber = jiraArray[1];
         //Save jiraGroup for next use
         localStorage.setItem('jiraGroup', jiraGroup);
-        
+
     } else if (/^[0-9]+$/.test(jira)) {
         //Use last set jiraGroup
         jiraGroup = localStorage.getItem('jiraGroup');
@@ -50,19 +52,19 @@ function openJiraPage() {
         url: "https://contegixapp1.livenation.com/jira/browse/" + jiraGroup + '-' + jiraNumber
     });
 
-    request.onload = function () {
-        var status = request.status;
-        var data = request.responseText;
-
-        alertError();
-
-        if (request.status === 201) {
-            statusDisplay.innerHTML = 'Loading jira ' + jiraGroup + "-" + jiraNumber;
-        } else {
-            alertError();
-            statusDisplay.innerHTML = "Failed to load page";
-        }
-    }
+    // request.onload = function () {
+    //     var status = request.status;
+    //     var data = request.responseText;
+    //
+    //     alertError();
+    //
+    //     if (request.status === 201) {
+    //         statusDisplay.innerHTML = 'Loading jira ' + jiraGroup + "-" + jiraNumber;
+    //     } else {
+    //         alertError();
+    //         statusDisplay.innerHTML = "Failed to load page";
+    //     }
+    // }
 }
 
 function addComment() {
@@ -87,7 +89,7 @@ function addComment() {
             alertError();
             statusDisplay.innerHTML = "Failed to add comment";
         }
-        
+
     }
 
     request.send(postData);
@@ -112,7 +114,7 @@ function retrieveUsersJiras() {
 
     var url = "https://contegixapp1.livenation.com/jira/rest/api/latest/search?";
     var method = "POST";
-    var async = false;
+    var async = true;
     var request = new XMLHttpRequest();
 
     request.open(method, url, async);
@@ -140,7 +142,7 @@ function retrieveUsersJiras() {
             alertError();
             statusDisplay.innerHTML = "Failed to load jiras" + status + data;
         }
-        
+
     }
 
     request.send(postData);
@@ -169,7 +171,7 @@ function checkLoginStatus() {
             alertError();
         }
     }
-    
+
     request.send();
 }
 
@@ -181,7 +183,7 @@ function alertError() {
 function sanitizeUsername(username) {
     // Most usernames are in the form of "firstname.lastname", but some names have a space instead of a period
     // "firstname lastname" requires the space to be prepended with two backslashes for Jira to parse it correctly
-    // Any white space that 
+    // Any white space that
     return username.replace(/\s/g, '\\ ');
 }
 
