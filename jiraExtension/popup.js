@@ -6,7 +6,7 @@ function runner () {
 
     var comment = document.getElementById('comment').value;
     if (document.getElementById('jiraIssue').value){
-        jiraIssue = document.getElementById('jiraIssue').value
+        jiraIssue = document.getElementById('jiraIssue').value;
     };
 
     // Pass the value of jiraIssue provided by the user into a

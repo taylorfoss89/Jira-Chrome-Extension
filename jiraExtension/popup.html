@@ -2,22 +2,26 @@
 <html>
     <head>
         <style>
-            body { 
+            body {
                 min-width: 200px;
-                overflow-x: hidden; 
-                font-family: "Lucida Sans Unicode"; 
+                overflow-x: hidden;
+                font-family: "Lucida Sans Unicode";
                 font-size: 12px;
                 font-weight: bold;
                 /*background-color: #EAF5F8;*/
             }
-            input, textarea { 
+            input, textarea {
                 width: 250px;
                 margin-top: 0px;
                 margin-left: 0px;
-                border: 2px solid #99cfe0;
+                -moz-border-radius: 5px;
+                -webkit-border-radius: 5px;
+                border: 2px solid #009cde;
                 padding: 5px;
             }
             #jiraDropDown {
+                /*position: relative;
+                right: 5px;*/
                 line-height:10px;
                 float:right;
                 padding:5px;
@@ -27,14 +31,16 @@
                 float:left;
                 padding:5px;
                 font-weight: bold; width: auto;
-                background: #e6f3f7;
+                background: #B2E1F5;
             }
             input#runButton {
                 line-height:10px;
                 float:left;
                 padding:5px;
+                -moz-border-radius: 5px;
+                -webkit-border-radius: 5px;
                 font-weight: bold; width: auto;
-                background: #e6f3f7;
+                background: white;
             }
 /*            input#comment {
                 width: 200px;
@@ -43,11 +49,18 @@
             }*/
             input#jiraIssue {
                 margin-left:1em;
+                -moz-border-radius: 5px;
+                -webkit-border-radius: 5px;
                 width: 100px;
                 padding:5px;
             }
+            #status-display {
+                position: relative;
+                left: -30px;
+                bottom: -18px;
+            }
             .errorAlert {
-                background: #f6c2b8;
+                background: #dd5151;
             }
         </style>
         <script src="popup.js"></script>
@@ -55,31 +68,22 @@
     <body id="body" class="body">
         <div class="window">
             <form id="runner">
-                <p><label for="jiraIssue">Jira</label>
+                <p><label for="jiraIssue" style="position: relative; left: 3px;">Jira</label>
                     <input type="text" id="jiraIssue" name="jiraIssue" size="50" placeholder="GROUP-XXX"/></p>
                 <!-- <p><label for="comment">Comment</label><br /> -->
-                <textarea id="comment" name="comment" rows="10" placeholder="Add your comment here..." draggable="true" spellcheck="true"/></textarea>    
+                <textarea id="comment" name="comment" rows="10" placeholder="Add your comment here..." draggable="true" spellcheck="true"/></textarea>
+                <br>
                 <div id="save">
                     <input id="runButton" type="submit" value=" Run "/>
                     <span id="status-display"></span>
                 </div>
-<!--                 <div id="nav">
-                    <select>
-                        <option value="false">Set a timer</option>
-                        <option value="15">15 min</option>
-                        <option value="30">30 min</option>
-                        <option value="1">1 hr</option>
-                        <option value="2">2 hr</option>
-                        <option value="4">4 hr</option>
-                        <option value="8">8 hr</option>
-                    </select>
-                </div> -->
                 <div>
-                    <select id="jiraDropDown">
+                    <select id="jiraDropDown" style="font-size: 18px;">
                         <Option> My Jiras</Option>
                     </select>
                 </div>
                 </p>
+                <div style="height: 10px;"></div>
             </form>
         </div>
     </body>
