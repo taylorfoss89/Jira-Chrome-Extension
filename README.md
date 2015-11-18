@@ -13,6 +13,8 @@ Clone repo into any directory.
 In Chrome:
 
 * go to manage your extensions: chrome://extensions
+* enable 'Develop Mode', found in the top right corner of the page
+![Developer Mode link](docs/images/enable_developer_mode.png "Developer Mode")
 * click 'Load unpacked extension...'
 * navigate to the *jiraExtension* directory
 * click 'Select'
