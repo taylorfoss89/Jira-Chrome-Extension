@@ -5,15 +5,14 @@
             body {
                 min-width: 200px;
                 overflow-x: hidden;
-                font-family: "Lucida Sans Unicode";
+                font-family: "Lucida Sans Unicode", sans-serif;
                 font-size: 12px;
                 font-weight: bold;
                 /*background-color: #EAF5F8;*/
             }
             input, textarea {
                 width: 250px;
-                margin-top: 0px;
-                margin-left: 0px;
+                margin: 0;
                 -moz-border-radius: 5px;
                 -webkit-border-radius: 5px;
                 border: 2px solid #009cde;
@@ -30,7 +29,8 @@
                 line-height:10px;
                 float:left;
                 padding:5px;
-                font-weight: bold; width: auto;
+                font-weight: bold;
+                width: auto;
                 background: #B2E1F5;
             }
             input#runButton {
@@ -42,11 +42,9 @@
                 font-weight: bold; width: auto;
                 background: white;
             }
-/*            input#comment {
-                width: 200px;
-                height: 100px;
-                padding:5px;
-            }*/
+            textarea#comment {
+                margin: 5px 0;
+            }
             input#jiraIssue {
                 margin-left:1em;
                 -moz-border-radius: 5px;
@@ -59,6 +57,7 @@
                 left: -30px;
                 bottom: -18px;
             }
+
             .errorAlert {
                 background: #dd5151;
             }
@@ -68,8 +67,10 @@
     <body id="body" class="body">
         <div class="window">
             <form id="runner">
-                <p><label for="jiraIssue" style="position: relative; left: 3px;">Jira</label>
-                    <input type="text" id="jiraIssue" name="jiraIssue" size="50" placeholder="GROUP-XXX"/></p>
+                <div>
+                    <label for="jiraIssue" style="position: relative; left: 3px;">Jira</label>
+                    <input type="text" id="jiraIssue" name="jiraIssue" size="50" placeholder="GROUP-XXX"/>
+                </div>
                 <!-- <p><label for="comment">Comment</label><br /> -->
                 <textarea id="comment" name="comment" rows="10" placeholder="Add your comment here..." draggable="true" spellcheck="true"/></textarea>
                 <br>
