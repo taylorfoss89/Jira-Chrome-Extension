@@ -4,7 +4,8 @@ An easy way to add notes to JIRA's that you have access to.
 
 ## Usage
 
--- TO DO
+![Popup link](docs/images/popup.png "Popup")
+* Jump to Jira issue in your current tab by entering the issue number or selecting from the dropdown and pressing 'enter' or by clicking the 'Run' button
 
 ## Installation
 
