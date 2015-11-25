@@ -61,6 +61,23 @@
             .errorAlert {
                 background: #dd5151;
             }
+
+            #settingsIcon {
+                padding-left: 85px;
+                vertical-align: middle;
+                cursor: pointer;
+            }
+
+            #settings {
+                padding-top: 10px; 
+                padding-bottom: 10px;
+                display: none;
+            }
+
+            #saveSettings {
+                width: 100px;
+            }
+
         </style>
         <script src="popup.js"></script>
     </head>
@@ -70,6 +87,7 @@
                 <div>
                     <label for="jiraIssue" style="position: relative; left: 3px;">Jira</label>
                     <input type="text" id="jiraIssue" name="jiraIssue" size="50" placeholder="GROUP-XXX"/>
+                    <img id="settingsIcon" src="settings.png" height="16" width="16" />
                 </div>
                 <!-- <p><label for="comment">Comment</label><br /> -->
                 <textarea id="comment" name="comment" rows="10" placeholder="Add your comment here..." draggable="true" spellcheck="true"/></textarea>
@@ -86,6 +104,11 @@
                 </p>
                 <div style="height: 10px;"></div>
             </form>
+            <div id="settings">
+                <input type="text" id="jiraServer" name="jiraServer" size="50" placeholder="https://your.jira.server" /> 
+                <div style="height: 10px;"></div>
+                <input id="saveSettings" type="button" value="Save" />
+            </div>
         </div>
     </body>
 </html>

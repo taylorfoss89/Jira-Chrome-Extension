@@ -79,7 +79,7 @@ function openJiraPage(jiraGroup,jiraNumber) {
     event.preventDefault();
 
     chrome.tabs.update({
-        url: "https://contegixapp1.livenation.com/jira/browse/" + jiraGroup + '-' + jiraNumber
+        url: localStorage.getItem('jiraServer') + "/jira/browse/" + jiraGroup + '-' + jiraNumber
     });
 
     // request.onload = function () {
@@ -101,7 +101,7 @@ function addComment(jiraGroup,jiraNumber,comment) {
     event.preventDefault();
 
     var postData = JSON.stringify({ "body": comment });
-    var url = "https://contegixapp1.livenation.com/jira/rest/api/latest/issue/" + jiraGroup + '-' + jiraNumber + "/comment";
+    var url = localStorage.getItem('jiraServer') + "/jira/rest/api/latest/issue/" + jiraGroup + '-' + jiraNumber + "/comment";
 
     ajax('POST', url, postData, {
         load: function() {
@@ -118,9 +118,9 @@ function addComment(jiraGroup,jiraNumber,comment) {
     });
 }
 
-
+// Check to make sure a user is logged in
 function checkLoginStatus(callback) {
-    ajax('GET', 'https://contegixapp1.livenation.com/jira/rest/auth/1/session', {
+    ajax('GET', localStorage.getItem('jiraServer') + '/jira/rest/auth/1/session', {
         load: function(){
             var status = this.status;
             var data = JSON.parse(this.responseText);
@@ -160,7 +160,7 @@ function retrieveUsersJiras(jiraUser) {
         ]
     });
 
-    ajax('POST', 'https://contegixapp1.livenation.com/jira/rest/api/latest/search?', postData, {
+    ajax('POST', localStorage.getItem('jiraServer') + '/jira/rest/api/latest/search?', postData, {
         load: function () {
             var status = this.status;
             var data = JSON.parse(this.responseText);
@@ -200,28 +200,61 @@ function alertError() {
     element.className += " errorAlert";
 }
 
+// Enables handlers on form if the user is authenticated
+function enableFormForJiraUser(jiraUser){
+
+    // Populate drowdown with the users currect, active Jiras
+    retrieveUsersJiras(jiraUser);
+    // Listener for jira selection in the dropdown
+    var dropDown = document.getElementById('jiraDropDown');
+    dropDown.addEventListener('change', function() {
+        jiraIssue = dropDown.value
+    });
+
+    // Event listener for 'cmd+enter' if in the comment textbox
+    document.getElementById('comment').addEventListener('keydown', function(element) {
+        if(element.keyCode == 13 && element.metaKey) {
+          runner();
+        }
+    });
+
+    // Event listener for submitting with 'enter' or clicking the button
+    document.getElementById('runner').addEventListener('submit', runner);
+}
+
+// Saves settings
+function saveSettings(){
+    for(var i = document.getElementById("jiraDropDown").options.length-1; i>=1; i--){
+        document.getElementById("jiraDropDown").remove(i);
+    }
+
+    localStorage.setItem('jiraServer', document.getElementById('jiraServer').value);
+    
+    checkLoginStatus(function(user){
+        enableFormForJiraUser(user);
+        document.getElementById('settings').style.display = 'none';
+    });
+}
 
 window.addEventListener('load', function() {
     statusDisplay = document.getElementById('status-display');
-    // Check to make sure a user is logged in
-    checkLoginStatus(function(jiraUser){
 
-        // Populate drowdown with the users currect, active Jiras
-        retrieveUsersJiras(jiraUser);
-        // Listener for jira selection in the dropdown
-        var dropDown = document.getElementById('jiraDropDown');
-        dropDown.addEventListener('change', function() {
-            jiraIssue = dropDown.value
-        });
+    if(!localStorage.getItem('jiraServer')){
+        localStorage.setItem('jiraServer', 'https://contegixapp1.livenation.com')
+    }
+    document.getElementById('jiraServer').value = localStorage.getItem('jiraServer'); ;
 
-        // Event listener for 'cmd+enter' if in the comment textbox
-        document.getElementById('comment').addEventListener('keydown', function(element) {
-            if(element.keyCode == 13 && element.metaKey) {
-              runner();
-            }
-        });
-
-        // Event listener for submitting with 'enter' or clicking the button
-        document.getElementById('runner').addEventListener('submit', runner);
+    // add handler to save settings on button click
+    document.getElementById('saveSettings').addEventListener('click', function(element){
+        saveSettings();
     });
+
+    // add handler to toggle showing/hiding settings
+    document.getElementById('settingsIcon').addEventListener('click', function(element){
+        var e = document.getElementById('settings');
+        e.style.display = (e.style.display === '' || e.style.display === 'none') ? 'block' : 'none';
+    });
+
+    // Initial load of JIRA data when window loads
+    checkLoginStatus(enableFormForJiraUser);
 });
